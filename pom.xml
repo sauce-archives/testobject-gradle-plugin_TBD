@@ -6,6 +6,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>TestObject Gradle Plugin</name>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -35,6 +39,11 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.1</version>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -53,6 +62,22 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	
+	<scm>
+		<connection>scm:git:git@github.com:testobject/testobject-gradle-plugin.git</connection>
+		<tag>HEAD</tag>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>testobject-public-repo</id>
+			<url>http://nexus.testobject.org/nexus/content/repositories/testobject-public-repo</url>
+		</repository>
+		<snapshotRepository>
+			<id>testobject-public-snapshots</id>
+			<url>http://nexus.testobject.org/nexus/content/repositories/testobject-public-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<dependencies>
 		<dependency>
@@ -83,8 +108,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.testobject</groupId>
-			<artifactId>testobject-java-client</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>testobject-java-api</artifactId>
+			<version>0.0.2</version>
 		</dependency>
 	</dependencies>
 </project>

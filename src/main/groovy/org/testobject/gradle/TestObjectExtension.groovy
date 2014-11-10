@@ -2,7 +2,7 @@ package org.testobject.gradle
 
 class TestObjectExtension {
 
-	String baseUrl = "http://app.testobject.com/api/rest"
+	String baseUrl = "https://app.testobject.com/api/rest"
 	String username
 	String password
 	String app
