@@ -124,6 +124,16 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>gradle-artifactory-repo</id>
+			<url>http://gradle.artifactoryonline.com/gradle/libs/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
-	
+
 </project>
