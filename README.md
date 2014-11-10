@@ -7,7 +7,7 @@ Use this plugin to upload your apk and test apk to app.testobject.com and execut
 
 See the sample build.gradle config above:
 
-'''
+```
 buildscript {
         repositories {
                 mavenCentral()
@@ -33,5 +33,4 @@ testobject {
 	app "your-app-name"
 	testSuite 17 // id of your test suite 
 }
-
-'''
+```
