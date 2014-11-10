@@ -35,4 +35,4 @@ testobject {
 }
 ```
 
-![](https://github.com/github/training-kit/blob/gh-pages/images/ScreenGradlePlugin.png)
+![](https://github.com/testobject/testobject-gradle-plugin/blob/gh-pages/images/ScreenGradlePlugin.png)
