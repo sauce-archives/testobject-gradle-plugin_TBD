@@ -82,12 +82,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.gradle</groupId>
-			<artifactId>core</artifactId>
+			<artifactId>gradle-core</artifactId>
 			<version>1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.gradle</groupId>
-			<artifactId>base-services</artifactId>
+			<artifactId>gradle-base-services</artifactId>
 			<version>1.5</version>
 		</dependency>
 		<dependency>
