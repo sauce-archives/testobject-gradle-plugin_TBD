@@ -28,9 +28,11 @@ android {
 }
 
 testobject {
-	username "your-username"
-	password "your-password"
-	app "your-app-name"
-	testSuite 17 // id of your test suite 
+	username "your-username" // username, see nr. 1 in screenshot above, not your email
+	password "your-password" // your password you use for login into testobject
+	app "your-app-name" // name of your app, see nr. 2 in screenshot above
+	testSuite 17 // id of your test suite, see nr. 3 in screenshot above
 }
 ```
+
+![](https://github.com/github/training-kit/blob/gh-pages/images/ScreenGradlePlugin.png)
