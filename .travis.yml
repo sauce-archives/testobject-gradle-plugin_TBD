@@ -3,5 +3,8 @@ env:
   global:
   - secure: P5mYviFXds4+IQGA1i7kA9P3XYZ9kZEIk4PVN3utIRNlzEKFOUUmp0YIxdfMFCBHtvL83tJ9wO209sU/3qSyFy4+Ge3kjilcpc78M1hzI1+GeQ20Ht/mrFcjij1+V0JMa/5RjF/Zne9QbIJYoHuck7zM61dmpibilMSBXBBz7D0=
   - secure: RKsoWHBhYurh+nMGb9tL64qpvKSFH+iEYMBsNVB/+t/30sOoqb6YovZ1eQxjQ5uiV5AtENM3HbiddKo0BFIAWzpsWyYsPs9PE1Q0nv+247LWcO/isnxMcLxBG4e5hEG79iIGgUSYthubEAIOBK2bhv6szoxb7Ghb2acMYI3FGXk=
-after_success: 
- - "mvn deploy --settings settings.xml"
+after_success:
+- mvn deploy --settings settings.xml
+notifications:
+  slack:
+    secure: cY8sYJDpE2rEG/m6esepKL5vdyTpJxeA+BzrsCRZ48FLms4JgDonY1yHR7cZ9OiyuvdXkh3bIBFP4ArL00L9mBRC1LhXpXIb4OZ4UB8eZHnw2YUVXz5RB/eo/JGs9XQ23tsE1kq4WUN0GAiE58WGEkwVGHZnz6bjfNdPWw692g8=
