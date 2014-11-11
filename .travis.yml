@@ -3,6 +3,8 @@ env:
   global:
   - secure: P5mYviFXds4+IQGA1i7kA9P3XYZ9kZEIk4PVN3utIRNlzEKFOUUmp0YIxdfMFCBHtvL83tJ9wO209sU/3qSyFy4+Ge3kjilcpc78M1hzI1+GeQ20Ht/mrFcjij1+V0JMa/5RjF/Zne9QbIJYoHuck7zM61dmpibilMSBXBBz7D0=
   - secure: RKsoWHBhYurh+nMGb9tL64qpvKSFH+iEYMBsNVB/+t/30sOoqb6YovZ1eQxjQ5uiV5AtENM3HbiddKo0BFIAWzpsWyYsPs9PE1Q0nv+247LWcO/isnxMcLxBG4e5hEG79iIGgUSYthubEAIOBK2bhv6szoxb7Ghb2acMYI3FGXk=
+  - secure: JxhC3YvC6hpfuIGdyorf+5RxH6MeN02uCm5gtGlCzeB0gnNIstG5m4pSFsnYZKGgaC78MfpxFUQM2hbvsnp1MZqfh9sCDJbtv1zsWGFQ71MuEybr4MCdd4Vr/OI18tQk4efNhiokMwHCNsRb8+V0lWXTJg3FJkryKzG91JG4G1E=
+  - secure: IAy+ptxReYRrUv442tYXmb6t/xMJR1AMzv6rhV0AXU9QWYJxztyaDYWzPS3q6aW8SJfk6PPRwowfsmid3U+Od+8vBG01w5bI8Ev1g+twC90fBJ/6O20J3w1OsyqN/A58O1A9KlnjAY/GhTs679W3bAvmhyV4VdhTmesekC6Fzsc=
 after_success:
 - mvn deploy --settings settings.xml
 notifications:
