@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 import org.gradle.api.GradleScriptException;
 import org.testobject.api.TestObjectClient;
-import org.testobject.rest.api.TestSuiteReportResource;
+import org.testobject.rest.api.TestSuiteReport;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -40,7 +40,7 @@ public class TestObjectTestServer extends TestServer {
 		updateInstrumentationSuite(testApk, appAk, client, username, app, testSuite);
 		long suiteReportId = client.startInstrumentationTestSuite(username, app, testSuite);
 
-		TestSuiteReportResource.TestSuiteReport suiteReport = client.waitForSuiteReport(username, app, suiteReportId);
+		TestSuiteReport suiteReport = client.waitForSuiteReport(username, app, suiteReportId);
 		int errors = countErrors(suiteReport);
 
 		String msg = String.format("test suite %d status: %s tests: %d errors: %d", suiteReportId, suiteReport.getStatus(), suiteReport
@@ -72,12 +72,12 @@ public class TestObjectTestServer extends TestServer {
 		}
 	}
 	
-	private static int countErrors(TestSuiteReportResource.TestSuiteReport suiteReport) {
+	private static int countErrors(TestSuiteReport suiteReport) {
 		int errors = 0;
-		Iterator<TestSuiteReportResource.TestSuiteReport.ReportEntry> reportsIterator = suiteReport.getReports().iterator();
+		Iterator<TestSuiteReport.ReportEntry> reportsIterator = suiteReport.getReports().iterator();
 		while (reportsIterator.hasNext()) {
-			TestSuiteReportResource.TestSuiteReport.ReportEntry reportEntry = (TestSuiteReportResource.TestSuiteReport.ReportEntry) reportsIterator.next();
-			if (reportEntry.getView().getStatus() == TestSuiteReportResource.TestSuiteReport.Status.FAILURE) {
+			TestSuiteReport.ReportEntry reportEntry = (TestSuiteReport.ReportEntry) reportsIterator.next();
+			if (reportEntry.getView().getStatus() == TestSuiteReport.Status.FAILURE) {
 				errors++;
 			}
 		}
