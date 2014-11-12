@@ -43,14 +43,14 @@ public class TestObjectTestServer extends TestServer {
 		TestSuiteReport suiteReport = client.waitForSuiteReport(username, app, suiteReportId);
 		int errors = countErrors(suiteReport);
 
-		String msg = String.format("test suite %d status: %s tests: %d errors: %d", suiteReportId, suiteReport.getStatus(), suiteReport
+		String msg = String.format("test suite report %d finished with status: %s tests: %d errors: %d", suiteReportId, suiteReport.getStatus(), suiteReport
 				.getReports().size(), errors);
 		if (errors == 0) {
 			info(msg);
 		} else {
 			error(msg);
 			if (extension.getFailOnError()) {
-				throw new GradleScriptException("failure during test suite execution of test suite " + suiteReportId, new Exception(msg));
+				throw new GradleScriptException("failure during test suite execution of test suite " + testSuite, new Exception(msg));
 			}
 		}
 	}
