@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.testobject</groupId>
 	<artifactId>testobject-gradle-plugin</artifactId>
-	<version>0.0.17</version>
+	<version>0.0.18</version>
 	<name>TestObject Gradle Plugin</name>
 
 	<properties>
@@ -63,6 +63,7 @@
 										<exclude>om.android.builder.testing.api.*</exclude>
 										<exclude>com.android.annotations.*</exclude>
 										<exclude>com.android.utils.*</exclude>
+										<exclude>gradle.lang.*</exclude>
 										<exclude>org.gradle.api.*</exclude>
 										<exclude>org.gradle.api.logging.*</exclude>
 										<exclude>org.testobject.api.*</exclude>
