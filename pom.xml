@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.testobject</groupId>
 	<artifactId>testobject-gradle-plugin</artifactId>
-	<version>0.0.14</version>
+	<version>0.0.15</version>
 	<name>TestObject Gradle Plugin</name>
 
 	<properties>
@@ -62,7 +62,7 @@
 									<excludes>
 										<exclude>org.testobject.api.*</exclude>
 										<exclude>org.testobject.rest.api.*</exclude>
-										<exclude>org.testobject.rest.gradle.*</exclude>
+										<exclude>org.testobject.gradle.*</exclude>
 									</excludes>
 								</relocation>
 							</relocations>
