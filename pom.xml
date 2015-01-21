@@ -63,7 +63,7 @@
 										<exclude>om.android.builder.testing.api.*</exclude>
 										<exclude>com.android.annotations.*</exclude>
 										<exclude>com.android.utils.*</exclude>
-										<exclude>gradle.lang.*</exclude>
+										<exclude>groovy.lang.*</exclude>
 										<exclude>org.gradle.api.*</exclude>
 										<exclude>org.gradle.api.logging.*</exclude>
 										<exclude>org.testobject.api.*</exclude>
