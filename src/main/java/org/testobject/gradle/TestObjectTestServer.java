@@ -1,7 +1,6 @@
 package org.testobject.gradle;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.Iterator;
 
 import org.gradle.api.GradleScriptException;
@@ -66,7 +65,7 @@ public class TestObjectTestServer extends TestServer {
 
 	private void updateInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String username, String app, Long testSuite) {
 		try {
-			client.updateInstrumentationTestSuite(username, app, testSuite, new FileInputStream(appAk), new FileInputStream(testApk));
+			client.updateInstrumentationTestSuite(username, app, testSuite, appAk, testApk);
 		} catch (Exception e) {
 			throw new GradleScriptException(String.format("unable to update testSuite %s", testSuite), e);
 		}
