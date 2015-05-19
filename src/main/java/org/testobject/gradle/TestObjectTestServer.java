@@ -17,7 +17,7 @@ public class TestObjectTestServer extends TestServer {
 	private final ILogger logger;
 	private final TestObjectExtension extension;
 
-	TestObjectTestServer(@NonNull TestObjectExtension extension, @NonNull ILogger logger) {
+	public TestObjectTestServer(@NonNull TestObjectExtension extension, @NonNull ILogger logger) {
 		this.extension = extension;
 		this.logger = logger;
 	}
