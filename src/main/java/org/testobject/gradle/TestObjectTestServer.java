@@ -4,20 +4,20 @@ import java.io.File;
 import java.util.Iterator;
 
 import org.gradle.api.GradleScriptException;
+import org.gradle.api.logging.Logger;
 import org.testobject.api.TestObjectClient;
 import org.testobject.rest.api.TestSuiteReport;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.testing.api.TestServer;
-import com.android.utils.ILogger;
 
 public class TestObjectTestServer extends TestServer {
 
-	private final ILogger logger;
+	private final Logger logger;
 	private final TestObjectExtension extension;
 
-	public TestObjectTestServer(@NonNull TestObjectExtension extension, @NonNull ILogger logger) {
+	public TestObjectTestServer(@NonNull TestObjectExtension extension, @NonNull Logger logger) {
 		this.extension = extension;
 		this.logger = logger;
 	}
@@ -25,7 +25,7 @@ public class TestObjectTestServer extends TestServer {
 	@Override
 	public void uploadApks(@NonNull String variantName, @NonNull File testApk, @Nullable File appAk) {
 		String baseUrl = extension.getBaseUrl();
-		info("using baseUrl '%s'", baseUrl);
+		logger.info("using baseUrl '%s'", baseUrl);
 
 		TestObjectClient client = TestObjectClient.Factory.create(baseUrl, getProxySettings());
 
@@ -45,9 +45,9 @@ public class TestObjectTestServer extends TestServer {
 		String msg = String.format("test suite report %d finished with status: %s tests: %d errors: %d", suiteReportId, suiteReport.getStatus(), suiteReport
 				.getReports().size(), errors);
 		if (errors == 0) {
-			info(msg);
+			logger.info(msg);
 		} else {
-			error(msg);
+			logger.error(msg);
 			if (extension.getFailOnError()) {
 				throw new GradleScriptException("failure during test suite execution of test suite " + testSuite, new Exception(msg));
 			}
@@ -57,7 +57,7 @@ public class TestObjectTestServer extends TestServer {
 	private void login(TestObjectClient client, String username, String password) {
 		try {
 			client.login(username, password);
-			info("user %s successfully logged in", username);
+			logger.info("user %s successfully logged in", username);
 		} catch (Exception e) {
 			throw new GradleScriptException(String.format("unable to login user %s", username), e);
 		}
@@ -86,19 +86,19 @@ public class TestObjectTestServer extends TestServer {
 	@Override
 	public boolean isConfigured() {
 		if (extension.getUsername() == null) {
-			logger.warning("username has not been set");
+			logger.warn("username has not been set");
 			return false;
 		}
 		if (extension.getPassword() == null) {
-			logger.warning("password has not been set");
+			logger.warn("password has not been set");
 			return false;
 		}
 		if (extension.getApp() == null) {
-			logger.warning("app name has not been set");
+			logger.warn("app name has not been set");
 			return false;
 		}
 		if (extension.getTestSuite() == null) {
-			logger.warning("testSuite has not been set");
+			logger.warn("testSuite has not been set");
 			return false;
 		}
 
@@ -108,14 +108,6 @@ public class TestObjectTestServer extends TestServer {
 	@Override
 	public String getName() {
 		return "testobject";
-	}
-
-	private void info(String format, Object... args) {
-		logger.info(format, args);
-	}
-
-	private void error(String format, Object... args) {
-		logger.error(null, format, args);
 	}
 
 	private static TestObjectClient.ProxySettings getProxySettings() {

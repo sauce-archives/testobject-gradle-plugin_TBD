@@ -1,12 +1,10 @@
 package org.testobject.gradle
 
-import com.android.utils.ILogger
-
-import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel;
-import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logger
+import org.gradle.api.logging.Logging;
 
 class TestObjectPlugin implements Plugin<Project> {
 
@@ -19,7 +17,7 @@ class TestObjectPlugin implements Plugin<Project> {
 		extension = project.extensions.create(PLUGIN_NAME, TestObjectExtension)
 		project.logger
 		if (project.plugins.hasPlugin('android') || project.plugins.hasPlugin('android-library')) {
-			project.android.testServer(new TestObjectTestServer(extension, project.android.logger))
+			project.android.testServer(new TestObjectTestServer(extension, Logging.getLogger("testobject")))
 		} else {
 			project.task('testobjectUpload') << { 
 				new TestObjectTestServer(extension, new DelegatingLogger(project.logger)).uploadApks(null, null, null)
@@ -27,7 +25,7 @@ class TestObjectPlugin implements Plugin<Project> {
 		}
 	}
 	
-	class DelegatingLogger extends ILogger{
+	class DelegatingLogger {
 		
 		private Logger logger;
 		
