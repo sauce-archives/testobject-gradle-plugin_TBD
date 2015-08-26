@@ -24,40 +24,42 @@ public class TestObjectTestServer extends TestServer {
 
 	@Override
 	public void uploadApks(@NonNull String variantName, @NonNull File testApk, @Nullable File appAk) {
-		String baseUrl = extension.getBaseUrl();
-		logger.info(String.format("using baseUrl '%s'", baseUrl));
+        String baseUrl = extension.getBaseUrl();
+        logger.info(String.format("using baseUrl '%s'", baseUrl));
 
-		TestObjectClient client = TestObjectClient.Factory.create(baseUrl, getProxySettings());
+        TestObjectClient client = TestObjectClient.Factory.create(baseUrl, getProxySettings());
 
-		String username = extension.getUsername();
-		String password = extension.getPassword();
-		String app = extension.getApp();
-		Long testSuite = extension.getTestSuite();
+        String username = extension.getUsername();
+        String password = extension.getPassword();
+        String app = extension.getApp();
+        Long testSuite = extension.getTestSuite();
 
-		login(client, username, password);
+        login(client, username, password);
 
-		updateInstrumentationSuite(testApk, appAk, client, username, app, testSuite);
-		long suiteReportId = client.startInstrumentationTestSuite(username, app, testSuite);
+        updateInstrumentationSuite(testApk, appAk, client, username, app, testSuite);
+        long suiteReportId = client.startInstrumentationTestSuite(username, app, testSuite);
 
-		TestSuiteReport suiteReport = client.waitForSuiteReport(username, app, suiteReportId);
-		int errors = countErrors(suiteReport);
-		String downloadURL = String.format("https://citrix.testobject.com/api/rest/users/%s/projects/%s/automationReports/%d/download/zip" , username , app , suiteReportId);
-		String msg = String.format("test suite report %d finished with status: %s tests: %d errors: %d ReportDownloadURL : %s ", suiteReportId, suiteReport.getStatus(), suiteReport
-				.getReports().size(), errors , downloadURL);
-		if (errors == 0) {
-			logger.info(msg);
-		} else {
-			logger.error(msg);
-			if (extension.getFailOnError()) {
-				throw new GradleScriptException("failure during test suite execution of test suite " + testSuite, new Exception(msg));
-			}
-		}
-	}
-
+        TestSuiteReport suiteReport = client.waitForSuiteReport(username, app, suiteReportId);
+        int errors = countErrors(suiteReport);
+        String downloadURL = String.format("%s/users/%s/projects/%s/automationReports/%d/download/zip", baseUrl, username, app, suiteReportId);
+        String reportURL = String.format("%s/#/%s/%s/espresso/%d/reports/%d" , baseUrl.replace("/api/rest" , ""), username , app, testSuite , suiteReportId);
+        String msg = String.format("Test suite report '%d' finished with status: '%s' , tests: %d , errors: %d , " +
+                "\n DownloadZIPURL: %s " +
+                "\n ReportURL : %s", suiteReportId, suiteReport.getStatus(), suiteReport
+                .getReports().size(), errors, downloadURL , reportURL);
+        if (errors == 0) {
+            logger.info(msg);
+        } else {
+            logger.error(msg);
+            if (extension.getFailOnError()) {
+                throw new GradleScriptException("failure during test suite execution of test suite " + testSuite, new Exception(msg));
+            }
+        }
+    }
 	private void login(TestObjectClient client, String username, String password) {
 		try {
 			client.login(username, password);
-			logger.info(String.format("user %s successfully logged in", username));
+			logger.info(String.format("user '%s' successfully logged in", username));
 		} catch (Exception e) {
 			throw new GradleScriptException(String.format("unable to login user %s", username), e);
 		}
