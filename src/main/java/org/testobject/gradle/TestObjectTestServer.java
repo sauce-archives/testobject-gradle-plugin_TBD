@@ -25,7 +25,7 @@ public class TestObjectTestServer extends TestServer {
 	@Override
 	public void uploadApks(@NonNull String variantName, @NonNull File testApk, @Nullable File appAk) {
 		String baseUrl = extension.getBaseUrl();
-		logger.info("using baseUrl '%s'", baseUrl);
+		logger.info(String.format("using baseUrl '%s'", baseUrl));
 
 		TestObjectClient client = TestObjectClient.Factory.create(baseUrl, getProxySettings());
 
@@ -41,9 +41,9 @@ public class TestObjectTestServer extends TestServer {
 
 		TestSuiteReport suiteReport = client.waitForSuiteReport(username, app, suiteReportId);
 		int errors = countErrors(suiteReport);
-
-		String msg = String.format("test suite report %d finished with status: %s tests: %d errors: %d", suiteReportId, suiteReport.getStatus(), suiteReport
-				.getReports().size(), errors);
+		String downloadURL = String.format("https://citrix.testobject.com/api/rest/users/%s/projects/%s/automationReports/%d/download/zip" , username , app , suiteReportId);
+		String msg = String.format("test suite report %d finished with status: %s tests: %d errors: %d ReportDownloadURL : %s ", suiteReportId, suiteReport.getStatus(), suiteReport
+				.getReports().size(), errors , downloadURL);
 		if (errors == 0) {
 			logger.info(msg);
 		} else {
@@ -57,7 +57,7 @@ public class TestObjectTestServer extends TestServer {
 	private void login(TestObjectClient client, String username, String password) {
 		try {
 			client.login(username, password);
-			logger.info("user %s successfully logged in", username);
+			logger.info(String.format("user %s successfully logged in", username));
 		} catch (Exception e) {
 			throw new GradleScriptException(String.format("unable to login user %s", username), e);
 		}
