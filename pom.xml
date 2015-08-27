@@ -3,15 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.testobject</groupId>
 	<artifactId>testobject-gradle-plugin</artifactId>
-	<version>0.0.28-4</version>
+	<version>0.0.29</version>
 	<name>TestObject Gradle Plugin</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<releaseRepoUrl>http://repo.ad.corp.expertcity.com:8080/archiva/repository/internal/</releaseRepoUrl>
-        <snapshotRepoUrl>http://repo.ad.corp.expertcity.com:8080/archiva/repository/snapshots/</snapshotRepoUrl>
-        <deployRepoUrl>${releaseRepoUrl}</deployRepoUrl>
-	</properties>
+    </properties>
 
 	<build>
 		<plugins>
@@ -71,7 +68,7 @@
 		<tag>HEAD</tag>
 	</scm>
 
-<!-- 	<distributionManagement>
+	<distributionManagement>
 		<repository>
 			<id>testobject-public-repo</id>
 			<url>http://nexus.testobject.org/nexus/content/repositories/testobject-public-repo</url>
@@ -81,20 +78,6 @@
 			<url>http://nexus.testobject.org/nexus/content/repositories/testobject-public-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
- -->
-
-  <distributionManagement>
-        <repository>
-            <id>Repository Archiva Managed Internal Repository</id>
-            <name>Repository Archiva Managed Internal Repository</name>
-            <url>${releaseRepoUrl}</url>
-        </repository>
-        <snapshotRepository>
-            <id>Repository Archiva Managed Snapshot Repository</id>
-            <name>Repository Archiva Managed Snapshot Repository</name>
-            <url>${snapshotRepoUrl}</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 	<dependencies>
 		<dependency>
