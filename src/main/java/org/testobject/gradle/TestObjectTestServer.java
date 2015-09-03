@@ -3,8 +3,8 @@ package org.testobject.gradle;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.concurrent.TimeUnit;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import org.gradle.api.GradleScriptException;
 import org.gradle.api.logging.Logger;
@@ -36,68 +36,68 @@ public class TestObjectTestServer extends TestServer {
         String password = extension.getPassword();
         String app = extension.getApp();
         Long testSuite = extension.getTestSuite();
+		String team = extension.getTeam() != null && extension.getTeam().isEmpty() == false ? extension.getTeam() : username;
 
+		login(client, username, password);
+		
+		updateInstrumentationSuite(testApk, appAk, client, team, app, testSuite);
 
-        login(client, username, password);
+		long start = System.currentTimeMillis();
 
-        updateInstrumentationSuite(testApk, appAk, client, username, app, testSuite);
+		long suiteReportId = client.startInstrumentationTestSuite(team, app, testSuite);
 
-        long start = System.currentTimeMillis();
+		TestSuiteReport suiteReport = client.waitForSuiteReport(team, app, suiteReportId);
 
-        long suiteReportId = client.startInstrumentationTestSuite(username, app, testSuite);
+		long end = System.currentTimeMillis();
 
-        TestSuiteReport suiteReport = client.waitForSuiteReport(username, app, suiteReportId);
+		String executionTime = getExecutionTime(start , end);
 
-        long end = System.currentTimeMillis();
+		int errors = countErrors(suiteReport);
+		String downloadURL = String.format("%s/users/%s/projects/%s/automationReports/%d/download/zip", baseUrl, team, app, suiteReportId);
+		String reportURL = String.format("%s/#/%s/%s/espresso/%d/reports/%d" , baseUrl.replace("/api/rest" , ""), team , app, testSuite , suiteReportId);
 
+		StringBuilder msg = new StringBuilder();
+		msg.append("\n");
+		msg.append(getTestsList(suiteReport));
+		msg.append("----------------------------------------------------------------------------------");
+		msg.append("\n");
+		msg.append(String.format("Ran %d tests in %s" , suiteReport
+				.getReports().size() , executionTime ));
+		msg.append("\n");
+		msg.append(suiteReport.getStatus());
+		msg.append("\n");
 
-        String executionTime = getExecutionTime(start , end);
+		if(errors > 0){
+			msg.append(String.format("List of failed Test (Total errors : %d)", errors));
+			msg.append("\n");
+			msg.append(failedTestsList(suiteReport , reportURL));
+			msg.append("\n");
+		}
 
-        int errors = countErrors(suiteReport);
-        String downloadURL = String.format("%s/users/%s/projects/%s/automationReports/%d/download/zip", baseUrl, username, app, suiteReportId);
-        String reportURL = String.format("%s/#/%s/%s/espresso/%d/reports/%d" , baseUrl.replace("/api/rest" , ""), username , app, testSuite , suiteReportId);
-
-        StringBuilder msg = new StringBuilder();
-        msg.append("\n");
-        msg.append(getTestsList(suiteReport , reportURL));
-        msg.append("----------------------------------------------------------------------------------");
-        msg.append("\n");
-        msg.append(String.format("Ran %d tests in %s" , suiteReport
-                .getReports().size() , executionTime ));
-        msg.append("\n");
-        msg.append(suiteReport.getStatus());
-        msg.append("\n");
-
-        if(errors > 0){
-            msg.append(String.format("List of failed Test (Total errors : %d)", errors));
-            msg.append("\n");
-            msg.append(failedTestsList(suiteReport , reportURL));
-            msg.append("\n");
-        }
-
-        msg.append(String.format("DownloadZIP URL: '%s'" , downloadURL));
-        msg.append("\n");
-        msg.append(String.format("Report URL : '%s'" , reportURL));
-        if (errors == 0) {
-            logger.info(msg.toString());
-        } else {
-            if (extension.getFailOnError()) {
-                throw new GradleScriptException("failure during test suite execution of test suite " + testSuite, new Exception(msg.toString()));
-            }
-        }
-    }
-	private void login(TestObjectClient client, String username, String password) {
-		try {
-			client.login(username, password);
-			logger.info(String.format("user '%s' successfully logged in", username));
-		} catch (Exception e) {
-			throw new GradleScriptException(String.format("unable to login user %s", username), e);
+		msg.append(String.format("DownloadZIP URL: '%s'" , downloadURL));
+		msg.append("\n");
+		msg.append(String.format("Report URL : '%s'" , reportURL));
+		if (errors == 0) {
+			logger.info(msg.toString());
+		} else {
+			if (extension.getFailOnError()) {
+				throw new GradleScriptException("failure during test suite execution of test suite " + testSuite, new Exception(msg.toString()));
+			}
 		}
 	}
 
-	private void updateInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String username, String app, Long testSuite) {
+	private void login(TestObjectClient client, String user, String password) {
 		try {
-			client.updateInstrumentationTestSuite(username, app, testSuite, appAk, testApk);
+			client.login(user, password);
+			logger.info("user %s successfully logged in", user);
+		} catch (Exception e) {
+			throw new GradleScriptException(String.format("unable to login user %s", user), e);
+		}
+	}
+
+	private void updateInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String team, String app, Long testSuite) {
+		try {
+			client.updateInstrumentationTestSuite(team, app, testSuite, appAk, testApk);
             logger.info(String.format("Uploaded appAPK : %s and testAPK : %s" , appAk.getAbsolutePath() , testApk.getAbsolutePath()));
 		} catch (Exception e) {
 			throw new GradleScriptException(String.format("unable to update testSuite %s", testSuite), e);
@@ -108,7 +108,7 @@ public class TestObjectTestServer extends TestServer {
 		int errors = 0;
 		Iterator<TestSuiteReport.ReportEntry> reportsIterator = suiteReport.getReports().iterator();
 		while (reportsIterator.hasNext()) {
-			TestSuiteReport.ReportEntry reportEntry = (TestSuiteReport.ReportEntry) reportsIterator.next();
+			TestSuiteReport.ReportEntry reportEntry = reportsIterator.next();
 			if (reportEntry.getView().getStatus() == TestSuiteReport.Status.FAILURE) {
 				errors++;
 			}
@@ -116,11 +116,11 @@ public class TestObjectTestServer extends TestServer {
 		return errors;
 	}
 
-    private static String getTestsList(TestSuiteReport suiteReport , String  baseReportUrl) {
+    private static String getTestsList(TestSuiteReport suiteReport) {
         StringBuilder list = new StringBuilder();
         Iterator<TestSuiteReport.ReportEntry> reportsIterator = suiteReport.getReports().iterator();
         while (reportsIterator.hasNext()) {
-            TestSuiteReport.ReportEntry reportEntry = (TestSuiteReport.ReportEntry) reportsIterator.next();
+            TestSuiteReport.ReportEntry reportEntry = reportsIterator.next();
             String testName = getTestName(suiteReport , reportEntry.getKey().getTestId());
             String deviceId = reportEntry.getKey().getDeviceId();
             list.append(String.format("%s - %s .............  %s" , testName , deviceId , reportEntry.getView().getStatus().toString()));
@@ -133,7 +133,7 @@ public class TestObjectTestServer extends TestServer {
         StringBuilder list = new StringBuilder();
         Iterator<TestSuiteReport.ReportEntry> reportsIterator = suiteReport.getReports().iterator();
         while (reportsIterator.hasNext()) {
-            TestSuiteReport.ReportEntry reportEntry = (TestSuiteReport.ReportEntry) reportsIterator.next();
+            TestSuiteReport.ReportEntry reportEntry = reportsIterator.next();
             if (reportEntry.getView().getStatus() == TestSuiteReport.Status.FAILURE) {
                 String testName = getTestName(suiteReport , reportEntry.getKey().getTestId());
                 String deviceId = reportEntry.getKey().getDeviceId();
@@ -149,7 +149,7 @@ public class TestObjectTestServer extends TestServer {
     private static String getTestName(TestSuiteReport suiteReport , long testId) {
         Iterator<TestSuiteReport.TestView> testViewIterator = suiteReport.getTests().iterator();
         while (testViewIterator.hasNext()) {
-            TestSuiteReport.TestView testView = (TestSuiteReport.TestView) testViewIterator.next();
+            TestSuiteReport.TestView testView = testViewIterator.next();
             if (testView.getTestId() == testId) {
                 return testView.getName();
             }
