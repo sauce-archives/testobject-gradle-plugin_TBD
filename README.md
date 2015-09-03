@@ -28,9 +28,9 @@ android {
 }
 
 testobject {
-	username "your-username" // username, see nr. 1 in screenshot above, not your email
+	username "your-username" // the username you use for login into testobject, not your email
 	password "your-password" // your password you use for login into testobject
-	team "a-team-name" //the name of the team the user belongs to (optional, of the user is not part of a team)
+	team "a-team-name" //the name of the team the user belongs to, see nr. 1 in screenshot above,  (optional, if the user is not part of a team)
 	app "your-app-name" // name of your app, see nr. 2 in screenshot above
 	testSuite 17 // id of your test suite, see nr. 3 in screenshot above
 }
