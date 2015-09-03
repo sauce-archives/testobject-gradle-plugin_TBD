@@ -33,13 +33,14 @@ public class TestObjectTestServer extends TestServer {
 		String password = extension.getPassword();
 		String app = extension.getApp();
 		Long testSuite = extension.getTestSuite();
+		String team = extension.getTeam() != null && extension.getTeam().isEmpty() == false ? extension.getTeam() : username;
 
 		login(client, username, password);
 
-		updateInstrumentationSuite(testApk, appAk, client, username, app, testSuite);
-		long suiteReportId = client.startInstrumentationTestSuite(username, app, testSuite);
+		updateInstrumentationSuite(testApk, appAk, client, team, app, testSuite);
+		long suiteReportId = client.startInstrumentationTestSuite(team, app, testSuite);
 
-		TestSuiteReport suiteReport = client.waitForSuiteReport(username, app, suiteReportId);
+		TestSuiteReport suiteReport = client.waitForSuiteReport(team, app, suiteReportId);
 		int errors = countErrors(suiteReport);
 
 		String msg = String.format("test suite report %d finished with status: %s tests: %d errors: %d", suiteReportId, suiteReport.getStatus(), suiteReport
@@ -54,18 +55,18 @@ public class TestObjectTestServer extends TestServer {
 		}
 	}
 
-	private void login(TestObjectClient client, String username, String password) {
+	private void login(TestObjectClient client, String user, String password) {
 		try {
-			client.login(username, password);
-			logger.info("user %s successfully logged in", username);
+			client.login(user, password);
+			logger.info("user %s successfully logged in", user);
 		} catch (Exception e) {
-			throw new GradleScriptException(String.format("unable to login user %s", username), e);
+			throw new GradleScriptException(String.format("unable to login user %s", user), e);
 		}
 	}
 
-	private void updateInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String username, String app, Long testSuite) {
+	private void updateInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String team, String app, Long testSuite) {
 		try {
-			client.updateInstrumentationTestSuite(username, app, testSuite, appAk, testApk);
+			client.updateInstrumentationTestSuite(team, app, testSuite, appAk, testApk);
 		} catch (Exception e) {
 			throw new GradleScriptException(String.format("unable to update testSuite %s", testSuite), e);
 		}
