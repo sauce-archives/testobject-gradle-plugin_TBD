@@ -1,7 +1,10 @@
 package org.testobject.gradle;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import org.gradle.api.GradleScriptException;
 import org.gradle.api.logging.Logger;
@@ -41,22 +44,21 @@ public class TestObjectTestServer extends TestServer {
 
 		long start = System.currentTimeMillis();
 
-		long suiteReportId = client.startInstrumentationTestSuite(username, app, testSuite);
+		long suiteReportId = client.startInstrumentationTestSuite(team, app, testSuite);
 
-		TestSuiteReport suiteReport = client.waitForSuiteReport(username, app, suiteReportId);
+		TestSuiteReport suiteReport = client.waitForSuiteReport(team, app, suiteReportId);
 
 		long end = System.currentTimeMillis();
-
 
 		String executionTime = getExecutionTime(start , end);
 
 		int errors = countErrors(suiteReport);
-		String downloadURL = String.format("%s/users/%s/projects/%s/automationReports/%d/download/zip", baseUrl, username, app, suiteReportId);
-		String reportURL = String.format("%s/#/%s/%s/espresso/%d/reports/%d" , baseUrl.replace("/api/rest" , ""), username , app, testSuite , suiteReportId);
+		String downloadURL = String.format("%s/users/%s/projects/%s/automationReports/%d/download/zip", baseUrl, team, app, suiteReportId);
+		String reportURL = String.format("%s/#/%s/%s/espresso/%d/reports/%d" , baseUrl.replace("/api/rest" , ""), team , app, testSuite , suiteReportId);
 
 		StringBuilder msg = new StringBuilder();
 		msg.append("\n");
-		msg.append(getTestsList(suiteReport , reportURL));
+		msg.append(getTestsList(suiteReport));
 		msg.append("----------------------------------------------------------------------------------");
 		msg.append("\n");
 		msg.append(String.format("Ran %d tests in %s" , suiteReport
@@ -106,7 +108,7 @@ public class TestObjectTestServer extends TestServer {
 		int errors = 0;
 		Iterator<TestSuiteReport.ReportEntry> reportsIterator = suiteReport.getReports().iterator();
 		while (reportsIterator.hasNext()) {
-			TestSuiteReport.ReportEntry reportEntry = (TestSuiteReport.ReportEntry) reportsIterator.next();
+			TestSuiteReport.ReportEntry reportEntry = reportsIterator.next();
 			if (reportEntry.getView().getStatus() == TestSuiteReport.Status.FAILURE) {
 				errors++;
 			}
@@ -114,11 +116,11 @@ public class TestObjectTestServer extends TestServer {
 		return errors;
 	}
 
-    private static String getTestsList(TestSuiteReport suiteReport , String  baseReportUrl) {
+    private static String getTestsList(TestSuiteReport suiteReport) {
         StringBuilder list = new StringBuilder();
         Iterator<TestSuiteReport.ReportEntry> reportsIterator = suiteReport.getReports().iterator();
         while (reportsIterator.hasNext()) {
-            TestSuiteReport.ReportEntry reportEntry = (TestSuiteReport.ReportEntry) reportsIterator.next();
+            TestSuiteReport.ReportEntry reportEntry = reportsIterator.next();
             String testName = getTestName(suiteReport , reportEntry.getKey().getTestId());
             String deviceId = reportEntry.getKey().getDeviceId();
             list.append(String.format("%s - %s .............  %s" , testName , deviceId , reportEntry.getView().getStatus().toString()));
@@ -131,7 +133,7 @@ public class TestObjectTestServer extends TestServer {
         StringBuilder list = new StringBuilder();
         Iterator<TestSuiteReport.ReportEntry> reportsIterator = suiteReport.getReports().iterator();
         while (reportsIterator.hasNext()) {
-            TestSuiteReport.ReportEntry reportEntry = (TestSuiteReport.ReportEntry) reportsIterator.next();
+            TestSuiteReport.ReportEntry reportEntry = reportsIterator.next();
             if (reportEntry.getView().getStatus() == TestSuiteReport.Status.FAILURE) {
                 String testName = getTestName(suiteReport , reportEntry.getKey().getTestId());
                 String deviceId = reportEntry.getKey().getDeviceId();
@@ -147,7 +149,7 @@ public class TestObjectTestServer extends TestServer {
     private static String getTestName(TestSuiteReport suiteReport , long testId) {
         Iterator<TestSuiteReport.TestView> testViewIterator = suiteReport.getTests().iterator();
         while (testViewIterator.hasNext()) {
-            TestSuiteReport.TestView testView = (TestSuiteReport.TestView) testViewIterator.next();
+            TestSuiteReport.TestView testView = testViewIterator.next();
             if (testView.getTestId() == testId) {
                 return testView.getName();
             }
