@@ -1,8 +1,10 @@
 package org.testobject.gradle
 
+import org.gradle.api.NamedDomainObjectContainer
+import org.gradle.api.Project
+
 
 class TestObjectExtension {
-
 
 
 
@@ -12,17 +14,11 @@ class TestObjectExtension {
 	String team
 	String app
 	Long testSuite
-    String name
-    TestClassConfiguration testClassConfiguration = new TestClassConfiguration()
-    TestCaseConfiguration testCaseConfiguration = new TestCaseConfiguration()
-    TestPackageConfiguration testPackageConfiguration = new TestPackageConfiguration()
-    TestAnnotationConfiguration testAnnotationConfiguration = new TestAnnotationConfiguration()
-    String runSizes
-    String devices
+    String suiteName
+    String[] args
+    String[] devices
 
     boolean failOnError = true
-
-
 }
 
 

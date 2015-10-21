@@ -5,7 +5,6 @@ import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging;
-import org.testobject.gradle.TestPackageConfiguration
 
 class TestObjectPlugin implements Plugin<Project> {
 
@@ -20,13 +19,6 @@ class TestObjectPlugin implements Plugin<Project> {
 	@Override
 	def void apply(Project project) {
 		extension = project.extensions.create(PLUGIN_NAME,TestObjectExtension);
-        extension.testPackageConfiguration = project.testobject.extensions.create("testPackageConfiguration",TestPackageConfiguration)
-        extension.testClassConfiguration = project.testobject.extensions.create("testClassConfiguration",TestClassConfiguration)
-        extension.testAnnotationConfiguration = project.testobject.extensions.create("testAnnotationConfiguration",TestAnnotationConfiguration)
-        extension.testCaseConfiguration = project.testobject.extensions.create("testCaseConfiguration",TestCaseConfiguration)
-
-
-
         project.logger
 		if (project.plugins.hasPlugin('android') || project.plugins.hasPlugin('android-library')) {
 			project.android.testServer(new TestObjectTestServer(extension, Logging.getLogger("testobject")))

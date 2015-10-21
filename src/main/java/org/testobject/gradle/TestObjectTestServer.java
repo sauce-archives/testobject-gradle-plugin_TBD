@@ -12,10 +12,7 @@ import org.testobject.rest.api.TestSuiteResource;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class TestObjectTestServer extends TestServer {
@@ -40,10 +37,12 @@ public class TestObjectTestServer extends TestServer {
         String password = extension.getPassword();
         String app = extension.getApp();
         Long testSuite = extension.getTestSuite();
-
+        String name = extension.getSuiteName();
         String team = extension.getTeam() != null && extension.getTeam().isEmpty() == false ? extension.getTeam() : username;
+        Map<String, String> configuration = mapConfiguration(extension);
+        Set<String> devices = new HashSet<String>(Arrays.asList(extension.getDevices()));
 
-        TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = findUsedConfiguration(extension);
+        TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResource.InstrumentationTestSuiteRequest(name,configuration,devices);
         login(client, username, password);
 
         long responseTestSuite = createInstrumentationSuite(testApk, appAk, client, team, app, testSuite, instrumentationTestSuiteRequest);
@@ -89,7 +88,11 @@ public class TestObjectTestServer extends TestServer {
         msg.append("\n");
         msg.append(String.format("Report URL : '%s'", reportURL));
         logger.info(msg.toString());
-        if (errors > 0) {
+        if (errors == 0) {
+            System.out.println(msg.toString());
+            logger.info(msg.toString());
+        }else if(errors > 0) {
+            System.out.println("Some Errors");
             logger.warn("Failure during test suite execution of test suite: " + responseTestSuite);
         }
     }
@@ -97,117 +100,7 @@ public class TestObjectTestServer extends TestServer {
     private void checkDevices(Set<String> devices) {
         if (devices == null)
             throw new IllegalArgumentException("incorrect configuration. Devices can not be empty");
-
-
     }
-
-    private void checkTheAnnotationConfiguration(TestObjectExtension extension, Set<String> runSizes) {
-        TestAnnotationConfiguration testAnnotationConfiguration = extension.getTestAnnotationConfiguration();
-        Set<String> runWithAnnotations = splitByComma(testAnnotationConfiguration.getRunWithAnnotations());
-        Set<String> runWithOutAnnotations = splitByComma(testAnnotationConfiguration.getRunWithOutAnnotations());
-        if (runWithAnnotations != null && runWithOutAnnotations != null)
-            throw new IllegalArgumentException("incorrect configuration. runWithAnnotations and runWithOutAnnotations can not be used together");
-        if(runSizes == null) {
-            return;
-        }
-        for (String size : runSizes) {
-            if (!(size.equals("small") || size.equals("medium") || size.equals("large"))) {
-                throw new IllegalArgumentException("incorrect configuration. runSizes should be a combination of these elements : small, medium, large ");
-            }
-        }
-
-    }
-
-    private void checkTheConfiguration(TestObjectExtension extension) {
-        TestClassConfiguration testClassConfiguration = extension.getTestClassConfiguration();
-
-
-        TestCaseConfiguration testCaseConfiguration = extension.getTestCaseConfiguration();
-
-        TestPackageConfiguration testPackageConfiguration = extension.getTestPackageConfiguration();
-
-        if ((!testCaseConfiguration.isEmpty() && !testClassConfiguration.isEmpty())
-                || (!testCaseConfiguration.isEmpty() && !testPackageConfiguration.isEmpty())
-                || (!testPackageConfiguration.isEmpty() && !testClassConfiguration.isEmpty())) {
-            throw new IllegalArgumentException("incorrect configuration. Please only use one test configuration");
-        }
-
-        Set<String> runTestClasses = splitByComma(testClassConfiguration.getRunTestClasses());
-        Set<String> runWitOutTestClasses = splitByComma(testClassConfiguration.getRunWithOutTestClasses());
-        if (runTestClasses != null && runWitOutTestClasses != null) {
-            throw new IllegalArgumentException("incorrect configuration. Please only use runTestClasses or runWithOutTestClasses");
-        }
-
-        Set<String> runTestPackages = splitByComma(testPackageConfiguration.getRunTestPackages());
-        Set<String> runWithOutTestPackages = splitByComma(testPackageConfiguration.getRunWithOutTestPackages());
-
-        if (runTestPackages != null && runWithOutTestPackages != null) {
-            throw new IllegalArgumentException("incorrect configuration. Please only use runTestPackages or runWithOutTestPackages");
-        }
-
-    }
-
-    private TestSuiteResource.InstrumentationTestSuiteRequest findUsedConfiguration(TestObjectExtension extension) {
-        String name = extension.getName();
-        TestSuiteResource.Type type = null;
-        Boolean typeRun = null;
-        Set<String> typeToRun = null;
-        Boolean annotationsRun = null;
-        Set<String> annotations = null;
-        Set<String> runSizes = splitByComma(extension.getRunSizes());
-        Set<String> devices = splitByComma(extension.getDevices());
-
-
-        if (!extension.getTestClassConfiguration().isEmpty()) {
-            Set<String> runTestClasses = splitByComma(extension.getTestClassConfiguration().getRunTestClasses());
-            Set<String> runWitOutTestClasses = splitByComma(extension.getTestClassConfiguration().getRunWithOutTestClasses());
-            if (runTestClasses != null) {
-                type = TestSuiteResource.Type.TEST_CLASS;
-                typeRun = true;
-                typeToRun = runTestClasses;
-            } else if (runWitOutTestClasses != null) {
-                type = TestSuiteResource.Type.TEST_CLASS;
-                typeRun = false;
-                typeToRun = runWitOutTestClasses;
-            }
-        } else if (!extension.getTestCaseConfiguration().isEmpty()) {
-            Set<String> runTestCases = splitByComma(extension.getTestCaseConfiguration().getRunTestCases());
-            if (runTestCases != null) {
-                type = TestSuiteResource.Type.TEST_CASE;
-                typeRun = true;
-                typeToRun = runTestCases;
-            }
-        } else if (!extension.getTestPackageConfiguration().isEmpty()) {
-            Set<String> runTestPackages = splitByComma(extension.getTestPackageConfiguration().getRunTestPackages());
-            Set<String> runWithOutTestPackages = splitByComma(extension.getTestPackageConfiguration().getRunWithOutTestPackages());
-            if (runTestPackages != null) {
-                type = TestSuiteResource.Type.TEST_PACKAGE;
-                typeRun = true;
-                typeToRun = runTestPackages;
-            } else if (runWithOutTestPackages != null) {
-                type = TestSuiteResource.Type.TEST_PACKAGE;
-                typeRun = false;
-                typeToRun = runWithOutTestPackages;
-            }
-        }
-        if (!extension.getTestAnnotationConfiguration().isEmpty()) {
-            Set<String> runWithAnnotations = splitByComma(extension.getTestAnnotationConfiguration().getRunWithAnnotations());
-            Set<String> runWithOutAnnotations = splitByComma(extension.getTestAnnotationConfiguration().getRunWithOutAnnotations());
-            if (runWithAnnotations != null) {
-                annotationsRun = true;
-                annotations = runWithAnnotations;
-            } else if (runWithOutAnnotations != null) {
-                annotationsRun = false;
-                annotations = runWithOutAnnotations;
-            }
-        }
-
-
-        return new TestSuiteResource.InstrumentationTestSuiteRequest(name, type, typeRun, typeToRun, annotationsRun, annotations, runSizes, devices);
-
-
-    }
-
 
     private void login(TestObjectClient client, String user, String password) {
         try {
@@ -292,6 +185,10 @@ public class TestObjectTestServer extends TestServer {
         return "";
     }
 
+    public boolean checkTheConfiguration(TestObjectExtension extension){
+        return true;
+    }
+
     @Override
     public boolean isConfigured() {
         if (extension.getUsername() == null) {
@@ -311,30 +208,14 @@ public class TestObjectTestServer extends TestServer {
             return false;
         }
 
-        Set<String> runSizes = splitByComma(extension.getRunSizes());
-
-        Set<String> devices = splitByComma(extension.getDevices());
-
         try {
-            checkTheConfiguration(extension);
-        } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage());
-            return false;
-        }
-
-        try {
-            checkTheAnnotationConfiguration(extension, runSizes);
-        } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage());
-            return false;
-        }
-
-        try {
+            Set<String> devices = new HashSet<String>(Arrays.asList(extension.getDevices()));
             checkDevices(devices);
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
             return false;
         }
+
 
 
         return true;
@@ -355,10 +236,22 @@ public class TestObjectTestServer extends TestServer {
                 : null;
     }
 
-    private Set<String> splitByComma(String s) {
+    private List<String> splitByColon(String s){
         if (s == null)
             return null;
-        return new HashSet<String>(Arrays.asList(s.split(",")));
+        return Arrays.asList(s.split(":"));
+    }
+
+    public Map<String, String> mapConfiguration(TestObjectExtension extension){
+        String[] args = extension.getArgs();
+        Map<String, String> configuration = new HashMap<String, String>();
+        for(String arg : args){
+            List<String> parsedArgs = splitByColon(arg);
+            if(parsedArgs.size() == 2){
+                configuration.put(parsedArgs.get(0),parsedArgs.get(1));
+            }
+        }
+        return configuration;
     }
 
     /**
