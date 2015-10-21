@@ -45,11 +45,11 @@ public class TestObjectTestServer extends TestServer {
         TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResource.InstrumentationTestSuiteRequest(name,configuration,devices);
         login(client, username, password);
 
-        long responseTestSuite = createInstrumentationSuite(testApk, appAk, client, team, app, testSuite, instrumentationTestSuiteRequest);
+        updateInstrumentationSuite(testApk, appAk, client, team, app, testSuite, instrumentationTestSuiteRequest);
 
         long start = System.currentTimeMillis();
 
-        long suiteReportId = client.startInstrumentationTestSuite(team, app, responseTestSuite);
+        long suiteReportId = client.startInstrumentationTestSuite(team, app, testSuite);
 
         TestSuiteReport suiteReport = client.waitForSuiteReport(team, app, suiteReportId);
 
@@ -59,13 +59,9 @@ public class TestObjectTestServer extends TestServer {
 
         int errors = countErrors(suiteReport);
         String downloadURL = String.format("%s/users/%s/projects/%s/automationReports/%d/download/zip", baseUrl, team, app, suiteReportId);
-        String reportURL = String.format("%s/#/%s/%s/espresso/%d/reports/%d", baseUrl.replace("/api/rest", ""), team, app, responseTestSuite, suiteReportId);
+        String reportURL = String.format("%s/#/%s/%s/espresso/%d/reports/%d", baseUrl.replace("/api/rest", ""), team, app, testSuite, suiteReportId);
 
         StringBuilder msg = new StringBuilder();
-        if(responseTestSuite != testSuite){
-            msg.append("\n");
-            msg.append("Test suite with the id entered wasn't found and a new Test Suite is created with the id: " + responseTestSuite);
-        }
 
         msg.append("\n");
         msg.append(getTestsList(suiteReport));
@@ -87,13 +83,13 @@ public class TestObjectTestServer extends TestServer {
         msg.append(String.format("DownloadZIP URL: '%s'", downloadURL));
         msg.append("\n");
         msg.append(String.format("Report URL : '%s'", reportURL));
-        logger.info(msg.toString());
+
         if (errors == 0) {
-            System.out.println(msg.toString());
             logger.info(msg.toString());
-        }else if(errors > 0) {
+        }
+        else if(errors > 0) {
             System.out.println("Some Errors");
-            logger.warn("Failure during test suite execution of test suite: " + responseTestSuite);
+            logger.warn("Failure during test suite execution of test suite: " + testSuite);
         }
     }
 
@@ -112,9 +108,9 @@ public class TestObjectTestServer extends TestServer {
         }
     }
 
-    private void updateInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String team, String app, Long testSuite) {
+    private void updateInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String team, String app, Long testSuite, TestSuiteResource.InstrumentationTestSuiteRequest request) {
         try {
-            client.updateInstrumentationTestSuite(team, app, testSuite, appAk, testApk);
+            client.updateInstrumentationTestSuite(team, app, testSuite, appAk, testApk,request);
             logger.info(String.format("Uploaded appAPK : %s and testAPK : %s", appAk.getAbsolutePath(), testApk.getAbsolutePath()));
         } catch (Exception e) {
             throw new GradleScriptException(String.format("unable to update testSuite %s", testSuite), e);
