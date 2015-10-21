@@ -8,7 +8,7 @@ class TestObjectExtension {
 
 
 
-    String baseUrl = "http://127.0.0.1:9000/rest"
+    String baseUrl = "https://app.testobject.com/api/rest"
 	String username
 	String password
 	String team
