@@ -37,10 +37,9 @@ public class TestObjectTestServer extends TestServer {
         String password = extension.getPassword();
         String app = extension.getApp();
         Long testSuite = extension.getTestSuite();
-        String name = extension.getSuiteName();
         String team = extension.getTeam() != null && extension.getTeam().isEmpty() == false ? extension.getTeam() : username;
 
-        TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResource.InstrumentationTestSuiteRequest(name,extension.getArgs(),null);
+        TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResource.InstrumentationTestSuiteRequest(null,extension.getArgs(),null);
         login(client, username, password);
 
         updateInstrumentationSuite(testApk, appAk, client, team, app, testSuite, instrumentationTestSuiteRequest);
