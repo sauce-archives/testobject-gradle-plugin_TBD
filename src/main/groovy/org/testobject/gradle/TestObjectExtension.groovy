@@ -2,6 +2,7 @@ package org.testobject.gradle
 
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
+import java.util.HashMap
 
 
 class TestObjectExtension {
@@ -15,7 +16,7 @@ class TestObjectExtension {
 	String app
 	Long testSuite
     String suiteName
-    String[] args
+    HashMap<String,String> args
     String[] devices
 
     boolean failOnError = true

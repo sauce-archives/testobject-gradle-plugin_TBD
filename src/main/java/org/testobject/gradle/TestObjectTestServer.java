@@ -39,10 +39,8 @@ public class TestObjectTestServer extends TestServer {
         Long testSuite = extension.getTestSuite();
         String name = extension.getSuiteName();
         String team = extension.getTeam() != null && extension.getTeam().isEmpty() == false ? extension.getTeam() : username;
-        Map<String, String> configuration = mapConfiguration(extension);
-        Set<String> devices = new HashSet<String>(Arrays.asList(extension.getDevices()));
 
-        TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResource.InstrumentationTestSuiteRequest(name,configuration,devices);
+        TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResource.InstrumentationTestSuiteRequest(name,extension.getArgs(),null);
         login(client, username, password);
 
         updateInstrumentationSuite(testApk, appAk, client, team, app, testSuite, instrumentationTestSuiteRequest);
@@ -204,13 +202,6 @@ public class TestObjectTestServer extends TestServer {
             return false;
         }
 
-        try {
-            Set<String> devices = new HashSet<String>(Arrays.asList(extension.getDevices()));
-            checkDevices(devices);
-        } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage());
-            return false;
-        }
 
 
 
@@ -238,17 +229,17 @@ public class TestObjectTestServer extends TestServer {
         return Arrays.asList(s.split(":"));
     }
 
-    public Map<String, String> mapConfiguration(TestObjectExtension extension){
-        String[] args = extension.getArgs();
-        Map<String, String> configuration = new HashMap<String, String>();
-        for(String arg : args){
-            List<String> parsedArgs = splitByColon(arg);
-            if(parsedArgs.size() == 2){
-                configuration.put(parsedArgs.get(0),parsedArgs.get(1));
-            }
-        }
-        return configuration;
-    }
+//    public Map<String, String> mapConfiguration(TestObjectExtension extension){
+//        String[] args = extension.getArgs();
+//        Map<String, String> configuration = new HashMap<String, String>();
+//        for(String arg : args){
+//            List<String> parsedArgs = splitByColon(arg);
+//            if(parsedArgs.size() == 2){
+//                configuration.put(parsedArgs.get(0),parsedArgs.get(1));
+//            }
+//        }
+//        return configuration;
+//    }
 
     /**
      * get Formatted Execution Time for printing
