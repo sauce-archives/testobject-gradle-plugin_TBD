@@ -8,20 +8,17 @@ import org.gradle.api.logging.Logging;
 
 class TestObjectPlugin implements Plugin<Project> {
 
-
-
-
 	public static final String PLUGIN_NAME = 'testobject'
 
 	private TestObjectExtension extension
 
-
 	@Override
-	def void apply(Project project) {
-		extension = project.extensions.create(PLUGIN_NAME,TestObjectExtension);
-        project.logger
+	void apply(Project project) {
+		extension = project.extensions.create(PLUGIN_NAME, TestObjectExtension)
+		String gradleDirectory = project.gradle.gradleHomeDir.absolutePath
+		project.logger
 		if (project.plugins.hasPlugin('android') || project.plugins.hasPlugin('android-library')) {
-			project.android.testServer(new TestObjectTestServer(extension, Logging.getLogger("testobject")))
+			project.android.testServer(new TestObjectTestServer(extension, Logging.getLogger("testobject"), gradleDirectory))
 		} else {
 			project.task('testobjectUpload') << { 
 				new TestObjectTestServer(extension, new DelegatingLogger(project.logger)).uploadApks(null, null, null)

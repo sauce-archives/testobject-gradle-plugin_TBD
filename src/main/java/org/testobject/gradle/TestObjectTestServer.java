@@ -9,7 +9,9 @@ import org.testobject.api.TestObjectClient;
 import org.testobject.rest.api.TestSuiteReport;
 import org.testobject.rest.api.TestSuiteResource;
 
-import java.io.File;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
@@ -19,9 +21,10 @@ public class TestObjectTestServer extends TestServer {
 
     private final Logger logger;
     private final TestObjectExtension extension;
+	private final String gradleDirectory;
 
-
-    public TestObjectTestServer(@NonNull TestObjectExtension extension, @NonNull Logger logger) {
+	public TestObjectTestServer(@NonNull TestObjectExtension extension, @NonNull Logger logger, @NonNull String gradleDirectory) {
+		this.gradleDirectory = gradleDirectory;
         this.extension = extension;
         this.logger = logger;
     }
@@ -49,6 +52,8 @@ public class TestObjectTestServer extends TestServer {
         long suiteReportId = client.startInstrumentationTestSuite(team, app, testSuite);
 
         TestSuiteReport suiteReport = client.waitForSuiteReport(team, app, suiteReportId);
+
+		writeSuiteReportXML(client, username, app, suiteReportId);
 
         long end = System.currentTimeMillis();
 
@@ -90,7 +95,19 @@ public class TestObjectTestServer extends TestServer {
         }
     }
 
-    private void checkDevices(Set<String> devices) {
+	private void writeSuiteReportXML(TestObjectClient client, String user, String app, long suiteReportId) {
+		String filename = user + "-" + app + "-" + suiteReportId + ".xml";
+        String xml = client.readTestSuiteXMLReport(user, app, suiteReportId);
+
+        try {
+            Files.write(Paths.get(filename), xml.getBytes());
+            logger.info("Wrote XML report to '" + filename + "'");
+        } catch (IOException e) {
+            logger.error("Failed to save XML report: " + e.getMessage());
+        }
+    }
+
+	private void checkDevices(Set<String> devices) {
         if (devices == null)
             throw new IllegalArgumentException("incorrect configuration. Devices can not be empty");
     }
