@@ -8,7 +8,8 @@ class TestObjectExtension {
 	String team
 	String app
 	Long testSuite
-	
+    HashMap<String,String> args
+
 	boolean failOnError = true
 
 }

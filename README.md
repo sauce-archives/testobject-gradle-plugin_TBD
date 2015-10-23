@@ -5,7 +5,7 @@ TestObject Gradle Plugin
 
 Use this plugin to upload your apk and test apk to app.testobject.com and execute the provided test cases.
 
-See the sample build.gradle config above:
+See the sample build.gradle config below:
 
 ```
 buildscript {
@@ -30,9 +30,9 @@ android {
 testobject {
 	username "your-username" // the username you use for login into testobject, not your email
 	password "your-password" // your password you use for login into testobject
-	team "a-team-name" //the name of the team the user belongs to, see nr. 1 in screenshot above,  (optional, if the user is not part of a team)
-	app "your-app-name" // name of your app, see nr. 2 in screenshot above
-	testSuite 17 // id of your test suite, see nr. 3 in screenshot above
+	team "a-team-name" //the name of the team the user belongs to, see nr. 1 in screenshot below,  (optional, if the user is not part of a team)
+	app "your-app-name" // name of your app, see nr. 2 in screenshot below
+	testSuite 17 // id of your test suite, see nr. 3 in screenshot below
 }
 ```
 
