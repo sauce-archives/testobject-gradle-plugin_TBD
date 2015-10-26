@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.testobject</groupId>
 	<artifactId>testobject-gradle-plugin</artifactId>
-	<version>0.0.33</version>
+	<version>0.0.34</version>
 	<name>TestObject Gradle Plugin</name>
 
 	<properties>
