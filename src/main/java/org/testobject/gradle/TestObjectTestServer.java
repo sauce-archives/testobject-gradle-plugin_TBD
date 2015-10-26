@@ -11,6 +11,7 @@ import org.testobject.rest.api.TestSuiteResource;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -102,7 +103,7 @@ public class TestObjectTestServer extends TestServer {
 		String xml = client.readTestSuiteXMLReport(user, app, suiteReportId);
 
 		try {
-			Files.write(Paths.get(filename), xml.getBytes());
+			Files.write(Paths.get("target/"+filename), xml.getBytes());
 			logger.info("Wrote XML report to '" + filename + "'");
 		} catch (IOException e) {
 			logger.error("Failed to save XML report: " + e.getMessage());
