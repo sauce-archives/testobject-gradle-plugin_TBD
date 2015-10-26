@@ -8,7 +8,7 @@ class TestObjectExtension {
 	String team
 	String app
 	Long testSuite
-    HashMap<String,String> args
+    Boolean runAsPackage
 
 	boolean failOnError = true
 
