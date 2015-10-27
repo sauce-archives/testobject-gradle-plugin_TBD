@@ -56,7 +56,7 @@ public class TestObjectTestServer extends TestServer {
 
 		TestSuiteReport suiteReport = client.waitForSuiteReport(team, app, suiteReportId);
 
-		writeSuiteReportXML(client, username, app, suiteReportId);
+		writeSuiteReportXML(client, team, app, suiteReportId);
 
 		long end = System.currentTimeMillis();
 
