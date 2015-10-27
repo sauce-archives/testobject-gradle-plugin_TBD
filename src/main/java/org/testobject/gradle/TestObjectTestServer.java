@@ -99,12 +99,16 @@ public class TestObjectTestServer extends TestServer {
 	}
 
 	private void writeSuiteReportXML(TestObjectClient client, String user, String app, long suiteReportId) {
+
 		String filename = user + "-" + app + "-" + suiteReportId + ".xml";
 		String xml = client.readTestSuiteXMLReport(user, app, suiteReportId);
-
+		File file = new File(Paths.get(gradleDirectory,"testobject").toAbsolutePath().toUri());
+		if(!file.isDirectory()){
+			file.mkdir();
+		}
 		try {
-			Files.write(Paths.get("target/"+filename), xml.getBytes());
-			logger.info("Wrote XML report to '" + filename + "'");
+			Files.write(Paths.get(gradleDirectory,"testobject",filename), xml.getBytes());
+					logger.info("Wrote XML report to '" + filename + "'");
 		} catch (IOException e) {
 			logger.error("Failed to save XML report: " + e.getMessage());
 		}
