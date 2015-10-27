@@ -16,7 +16,7 @@ buildscript {
  
         dependencies {
                 classpath 'com.android.tools.build:gradle:0.12+'
-                classpath group: 'org.testobject', name: 'testobject-gradle-plugin', version: '0.0.29'
+                classpath group: 'org.testobject', name: 'testobject-gradle-plugin', version: '0.0.35'
         }
 }
 
@@ -33,6 +33,7 @@ testobject {
 	team "a-team-name" //the name of the team the user belongs to, see nr. 1 in screenshot below,  (optional, if the user is not part of a team)
 	app "your-app-name" // name of your app, see nr. 2 in screenshot below
 	testSuite 17 // id of your test suite, see nr. 3 in screenshot below
+	runAsPackage true // This is a new feature we recently brought. If you are using custom runners and doing internal filterings we reccomend you to use it like this. If not this option can be deleted or set as false
 }
 ```
 
