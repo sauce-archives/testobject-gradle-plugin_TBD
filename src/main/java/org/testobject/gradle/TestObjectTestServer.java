@@ -120,7 +120,8 @@ public class TestObjectTestServer extends TestServer {
 	private void login(TestObjectClient client, String user, String password) {
 		try {
 			client.login(user, password);
-			logger.info("user %s successfully logged in", user);
+
+			logger.info(String.format("user %s successfully logged in",user));
 		} catch (Exception e) {
 			throw new GradleScriptException(String.format("unable to login user %s", user), e);
 		}
