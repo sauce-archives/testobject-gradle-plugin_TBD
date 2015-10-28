@@ -42,9 +42,10 @@ public class TestObjectTestServer extends TestServer {
 		String app = extension.getApp();
 		Long testSuite = extension.getTestSuite();
 		String team = extension.getTeam() != null && extension.getTeam().isEmpty() == false ? extension.getTeam() : username;
-		Boolean runAsPackage = extension.getRunAsPackage() != null ?  extension.getRunAsPackage() : false;
+		Boolean runAsPackage = extension.getRunAsPackage() != null ? extension.getRunAsPackage() : false;
 
-		TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResource.InstrumentationTestSuiteRequest(runAsPackage);
+		TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResource.InstrumentationTestSuiteRequest(
+				runAsPackage);
 
 		login(client, username, password);
 
@@ -64,7 +65,8 @@ public class TestObjectTestServer extends TestServer {
 
 		int errors = countErrors(suiteReport);
 		String downloadURL = String.format("%s/users/%s/projects/%s/automationReports/%d/download/zip", baseUrl, team, app, suiteReportId);
-		String reportURL = String.format("%s/#/%s/%s/espresso/%d/reports/%d", baseUrl.replace("/api/rest", ""), team, app, testSuite, suiteReportId);
+		String reportURL = String
+				.format("%s/#/%s/%s/espresso/%d/reports/%d", baseUrl.replace("/api/rest", ""), team, app, testSuite, suiteReportId);
 
 		StringBuilder msg = new StringBuilder();
 
@@ -91,10 +93,11 @@ public class TestObjectTestServer extends TestServer {
 
 		if (errors == 0) {
 			logger.info(msg.toString());
-		}
-		else if(errors > 0) {
-			System.out.println("Some Errors");
-			logger.warn("Failure during test suite execution of test suite: " + testSuite);
+		} else {
+			if (extension.getFailOnError()) {
+				throw new GradleScriptException("failure during test suite execution of test suite " + testSuite,
+						new Exception(msg.toString()));
+			}
 		}
 	}
 
@@ -102,26 +105,20 @@ public class TestObjectTestServer extends TestServer {
 
 		String filename = user + "-" + app + "-" + suiteReportId + ".xml";
 		String xml = client.readTestSuiteXMLReport(user, app, suiteReportId);
-		File file = new File(Paths.get(gradleDirectory,"testobject").toAbsolutePath().toUri());
-		if(!file.isDirectory()){
+		File file = new File(Paths.get(gradleDirectory, "testobject").toAbsolutePath().toUri());
+		if (!file.isDirectory()) {
 			file.mkdir();
 		}
 		try {
-			Files.write(Paths.get(gradleDirectory,"testobject",filename), xml.getBytes());
-					logger.info("Wrote XML report to '" + filename + "'");
+			Files.write(Paths.get(gradleDirectory, "testobject", filename), xml.getBytes());
+			logger.info("Wrote XML report to '" + filename + "'");
 		} catch (IOException e) {
 			logger.error("Failed to save XML report: " + e.getMessage());
 		}
 	}
 
-	private void checkDevices(Set<String> devices) {
-		if (devices == null)
-			throw new IllegalArgumentException("incorrect configuration. Devices can not be empty");
-	}
-
 	private void login(TestObjectClient client, String user, String password) {
 		try {
-
 			client.login(user, password);
 			logger.info("user %s successfully logged in", user);
 		} catch (Exception e) {
@@ -129,16 +126,18 @@ public class TestObjectTestServer extends TestServer {
 		}
 	}
 
-	private void updateInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String team, String app, Long testSuite, TestSuiteResource.InstrumentationTestSuiteRequest request) {
+	private void updateInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String team, String app, Long testSuite,
+			TestSuiteResource.InstrumentationTestSuiteRequest request) {
 		try {
-			client.updateInstrumentationTestSuite(team, app, testSuite, appAk, testApk,request);
+			client.updateInstrumentationTestSuite(team, app, testSuite, appAk, testApk, request);
 			logger.info(String.format("Uploaded appAPK : %s and testAPK : %s", appAk.getAbsolutePath(), testApk.getAbsolutePath()));
 		} catch (Exception e) {
 			throw new GradleScriptException(String.format("unable to update testSuite %s", testSuite), e);
 		}
 	}
 
-	private long createInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String team, String app, Long testSuite, TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest) {
+	private long createInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String team, String app, Long testSuite,
+			TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest) {
 		long batchId;
 		try {
 			batchId = client.createInstrumentationTestSuite(team, app, testSuite, appAk, testApk, instrumentationTestSuiteRequest);
@@ -202,10 +201,6 @@ public class TestObjectTestServer extends TestServer {
 		return "";
 	}
 
-	public boolean checkTheConfiguration(TestObjectExtension extension){
-		return true;
-	}
-
 	@Override
 	public boolean isConfigured() {
 		if (extension.getUsername() == null) {
@@ -225,9 +220,6 @@ public class TestObjectTestServer extends TestServer {
 			return false;
 		}
 
-
-
-
 		return true;
 	}
 
@@ -245,24 +237,6 @@ public class TestObjectTestServer extends TestServer {
 		return proxyHost != null ? new TestObjectClient.ProxySettings(proxyHost, Integer.parseInt(proxyPort), proxyUser, proxyPassword)
 				: null;
 	}
-
-	private List<String> splitByColon(String s){
-		if (s == null)
-			return null;
-		return Arrays.asList(s.split(":"));
-	}
-
-	//    public Map<String, String> mapConfiguration(TestObjectExtension extension){
-	//        String[] args = extension.getArgs();
-	//        Map<String, String> configuration = new HashMap<String, String>();
-	//        for(String arg : args){
-	//            List<String> parsedArgs = splitByColon(arg);
-	//            if(parsedArgs.size() == 2){
-	//                configuration.put(parsedArgs.get(0),parsedArgs.get(1));
-	//            }
-	//        }
-	//        return configuration;
-	//    }
 
 	/**
 	 * get Formatted Execution Time for printing
