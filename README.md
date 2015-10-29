@@ -5,6 +5,10 @@ TestObject Gradle Plugin
 
 Use this plugin to upload your apk and test apk to app.testobject.com and execute the provided test cases.
 
+If it's need you can also run your test cases as a package. This is recommended for users who are using a custom runner to do internal filtering.
+
+At the end of the test run a junit xml file will be written into the folder named "testobject" under the build folder of your project. This xml file holds the information about the test run and it can be integrated with your jenkins server.
+
 See the sample build.gradle config below:
 
 ```
