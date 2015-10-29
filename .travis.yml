@@ -1,4 +1,5 @@
 language: java
+sudo: false
 env:
   global:
   - secure: P5mYviFXds4+IQGA1i7kA9P3XYZ9kZEIk4PVN3utIRNlzEKFOUUmp0YIxdfMFCBHtvL83tJ9wO209sU/3qSyFy4+Ge3kjilcpc78M1hzI1+GeQ20Ht/mrFcjij1+V0JMa/5RjF/Zne9QbIJYoHuck7zM61dmpibilMSBXBBz7D0=
@@ -9,4 +10,6 @@ after_success:
 - mvn deploy --settings settings.xml
 notifications:
   slack:
+    on_success: change
+    on_failure: always
     secure: cY8sYJDpE2rEG/m6esepKL5vdyTpJxeA+BzrsCRZ48FLms4JgDonY1yHR7cZ9OiyuvdXkh3bIBFP4ArL00L9mBRC1LhXpXIb4OZ4UB8eZHnw2YUVXz5RB/eo/JGs9XQ23tsE1kq4WUN0GAiE58WGEkwVGHZnz6bjfNdPWw692g8=
