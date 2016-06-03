@@ -37,7 +37,7 @@ testobject {
 	team "a-team-name" //the name of the team the user belongs to, see nr. 1 in screenshot below,  (optional, if the user is not part of a team)
 	app "your-app-name" // name of your app, see nr. 2 in screenshot below
 	testSuite 17 // id of your test suite, see nr. 3 in screenshot below
-	runAsPackage true // This is a new feature we recently brought. If you are using custom runners and doing internal falterings we recommend you to use it like this. If not this option can be deleted or set as false
+	runAsPackage true // This is a new feature we recently brought. If you are using custom runners and doing internal filterings we recommend you to use it like this. If not this option can be deleted or set as false
 	classes = ["com.testobject.foobar.Test1","com.testobject.foobar.Test2"] // This property can be set to run only some test methods
 	tests = ["com.testobject.foobar.Test1#test"] // This property can be set to run only some test methods
 	annotations = ["com.testobject.annotation.Test"] // This property can be set if you want to only run tests that has this annotation. If the annotation is set on the class then the methods will also inherit it and will be run
