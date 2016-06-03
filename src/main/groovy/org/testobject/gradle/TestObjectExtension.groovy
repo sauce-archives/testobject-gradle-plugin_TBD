@@ -8,7 +8,12 @@ class TestObjectExtension {
 	String team
 	String app
 	Long testSuite
+    List<String> tests
+    List<String> classes
+    List<String> annotations
+    List<String> sizes
     Boolean runAsPackage
+
 
 	boolean failOnError = true
 
