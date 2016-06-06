@@ -9,13 +9,14 @@ import org.testobject.api.TestObjectClient;
 import org.testobject.rest.api.TestSuiteReport;
 import org.testobject.rest.api.TestSuiteResource;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class TestObjectTestServer extends TestServer {
@@ -42,10 +43,19 @@ public class TestObjectTestServer extends TestServer {
 		String app = extension.getApp();
 		Long testSuite = extension.getTestSuite();
 		String team = extension.getTeam() != null && extension.getTeam().isEmpty() == false ? extension.getTeam() : username;
+		List<String> methodsToRun = extension.getTests();
+		List<String> classesToRun = extension.getClasses();
+		List<String> annotationsToRun = extension.getAnnotations();
+		List<String> sizesToRun = extension.getSizes();
+
 		Boolean runAsPackage = extension.getRunAsPackage() != null ? extension.getRunAsPackage() : false;
 
 		TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResource.InstrumentationTestSuiteRequest(
 				runAsPackage);
+		instrumentationTestSuiteRequest.methodsToRun = methodsToRun;
+		instrumentationTestSuiteRequest.annotationsToRun = annotationsToRun;
+		instrumentationTestSuiteRequest.classesToRun = classesToRun;
+		instrumentationTestSuiteRequest.sizesToRun = sizesToRun;
 
 		login(client, username, password);
 
@@ -121,7 +131,7 @@ public class TestObjectTestServer extends TestServer {
 		try {
 			client.login(user, password);
 
-			logger.info(String.format("user %s successfully logged in",user));
+			logger.info(String.format("user %s successfully logged in", user));
 		} catch (Exception e) {
 			throw new GradleScriptException(String.format("unable to login user %s", user), e);
 		}
