@@ -41,7 +41,7 @@ testobject {
 	classes = ["com.testobject.foobar.Test1","com.testobject.foobar.Test2"] // This property can be set to run only some test methods
 	tests = ["com.testobject.foobar.Test1#test"] // This property can be set to run only some test methods
 	annotations = ["com.testobject.annotation.Test"] // This property can be set if you want to only run tests that has this annotation. If the annotation is set on the class then the methods will also inherit it and will be run
-	sizes = ["small","medium","large"] // This property can be set if you just want to run tests that have @SmallTest, @MediumTest and @LargeTest annotations. Like annotations, class annotations will again be inherited by the methods
+	sizes = ["small","medium","large"] // This property can be set if you just want to run tests that have @SmallTest, @MediumTest and @LargeTest annotations. Like annotations, class annotations will again be inherited by the methods 
 }
 ```
 
