@@ -6,8 +6,8 @@ import com.android.builder.testing.api.TestServer;
 import org.gradle.api.GradleScriptException;
 import org.gradle.api.logging.Logger;
 import org.testobject.api.TestObjectClient;
-import org.testobject.rest.api.TestSuiteReport;
-import org.testobject.rest.api.TestSuiteResource;
+import org.testobject.rest.api.model.TestSuiteReport;
+import org.testobject.rest.api.TestSuiteResourceImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +50,7 @@ public class TestObjectTestServer extends TestServer {
 
 		Boolean runAsPackage = extension.getRunAsPackage() != null ? extension.getRunAsPackage() : false;
 
-		TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResource.InstrumentationTestSuiteRequest(
+		TestSuiteResourceImpl.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResourceImpl.InstrumentationTestSuiteRequest(
 				runAsPackage);
 		instrumentationTestSuiteRequest.methodsToRun = methodsToRun;
 		instrumentationTestSuiteRequest.annotationsToRun = annotationsToRun;
@@ -138,7 +138,7 @@ public class TestObjectTestServer extends TestServer {
 	}
 
 	private void updateInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String team, String app, Long testSuite,
-			TestSuiteResource.InstrumentationTestSuiteRequest request) {
+			TestSuiteResourceImpl.InstrumentationTestSuiteRequest request) {
 		try {
 			client.updateInstrumentationTestSuite(team, app, testSuite, appAk, testApk, request);
 			logger.info(String.format("Uploaded appAPK : %s and testAPK : %s", appAk.getAbsolutePath(), testApk.getAbsolutePath()));
@@ -148,7 +148,7 @@ public class TestObjectTestServer extends TestServer {
 	}
 
 	private long createInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String team, String app, Long testSuite,
-			TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest) {
+			TestSuiteResourceImpl.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest) {
 		long batchId;
 		try {
 			batchId = client.createInstrumentationTestSuite(team, app, testSuite, appAk, testApk, instrumentationTestSuiteRequest);
