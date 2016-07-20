@@ -14,7 +14,7 @@ class TestObjectExtension {
     List<String> sizes
     Boolean runAsPackage
 
-
+    boolean failWhenUnavailable = false
     boolean failOnError = true
 
 }
