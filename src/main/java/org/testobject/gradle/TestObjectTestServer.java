@@ -160,8 +160,8 @@ public class TestObjectTestServer extends TestServer {
 		return errors;
 	}
 
-	private static boolean isFailed(TestSuiteReport.ReportEntry reportEntry, boolean failWhenUnavailable) {
-		if (failWhenUnavailable) {
+	private static boolean isFailed(TestSuiteReport.ReportEntry reportEntry, boolean failOnUnknown) {
+		if (failOnUnknown) {
 			return reportEntry.getView().getStatus() == TestSuiteReport.Status.FAILURE
 					|| reportEntry.getView().getStatus() == TestSuiteReport.Status.UNKNOWN;
 		} else {
