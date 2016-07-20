@@ -47,6 +47,7 @@ public class TestObjectTestServer extends TestServer {
 		List<String> classesToRun = extension.getClasses();
 		List<String> annotationsToRun = extension.getAnnotations();
 		List<String> sizesToRun = extension.getSizes();
+		boolean failOnUnknown = extension.getFailOnUnknown();
 
 		Boolean runAsPackage = extension.getRunAsPackage() != null ? extension.getRunAsPackage() : false;
 
@@ -73,7 +74,7 @@ public class TestObjectTestServer extends TestServer {
 
 		String executionTime = getExecutionTime(start, end);
 
-		int errors = countErrors(suiteReport);
+		int errors = countErrors(suiteReport, failOnUnknown);
 		String downloadURL = String.format("%s/users/%s/projects/%s/automationReports/%d/download/zip", baseUrl, team, app, suiteReportId);
 		String reportURL = String
 				.format("%s/#/%s/%s/espresso/%d/reports/%d", baseUrl.replace("/api/rest", ""), team, app, testSuite, suiteReportId);
@@ -147,28 +148,25 @@ public class TestObjectTestServer extends TestServer {
 		}
 	}
 
-	private long createInstrumentationSuite(File testApk, File appAk, TestObjectClient client, String team, String app, Long testSuite,
-			TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest) {
-		long batchId;
-		try {
-			batchId = client.createInstrumentationTestSuite(team, app, testSuite, appAk, testApk, instrumentationTestSuiteRequest);
-			logger.info(String.format("Uploaded appAPK : %s and testAPK : %s", appAk.getAbsolutePath(), testApk.getAbsolutePath()));
-		} catch (Exception e) {
-			throw new GradleScriptException(String.format("unable to create testSuite %s", testSuite), e);
-		}
-		return batchId;
-	}
-
-	private static int countErrors(TestSuiteReport suiteReport) {
+	private static int countErrors(TestSuiteReport suiteReport, boolean failOnUnknown) {
 		int errors = 0;
 		Iterator<TestSuiteReport.ReportEntry> reportsIterator = suiteReport.getReports().iterator();
 		while (reportsIterator.hasNext()) {
 			TestSuiteReport.ReportEntry reportEntry = reportsIterator.next();
-			if (reportEntry.getView().getStatus() == TestSuiteReport.Status.FAILURE) {
+			if (isFailed(reportEntry, failOnUnknown)) {
 				errors++;
 			}
 		}
 		return errors;
+	}
+
+	private static boolean isFailed(TestSuiteReport.ReportEntry reportEntry, boolean failOnUnknown) {
+		if (failOnUnknown) {
+			return reportEntry.getView().getStatus() == TestSuiteReport.Status.FAILURE
+					|| reportEntry.getView().getStatus() == TestSuiteReport.Status.UNKNOWN;
+		} else {
+			return reportEntry.getView().getStatus() == TestSuiteReport.Status.FAILURE;
+		}
 	}
 
 	private static String getTestsList(TestSuiteReport suiteReport) {
