@@ -47,7 +47,7 @@ public class TestObjectTestServer extends TestServer {
 		List<String> classesToRun = extension.getClasses();
 		List<String> annotationsToRun = extension.getAnnotations();
 		List<String> sizesToRun = extension.getSizes();
-		boolean failWhenUnavailable = extension.getFailOnUnknown();
+		boolean failOnUnknown = extension.getFailOnUnknown();
 
 		Boolean runAsPackage = extension.getRunAsPackage() != null ? extension.getRunAsPackage() : false;
 
@@ -74,7 +74,7 @@ public class TestObjectTestServer extends TestServer {
 
 		String executionTime = getExecutionTime(start, end);
 
-		int errors = countErrors(suiteReport, failWhenUnavailable);
+		int errors = countErrors(suiteReport, failOnUnknown);
 		String downloadURL = String.format("%s/users/%s/projects/%s/automationReports/%d/download/zip", baseUrl, team, app, suiteReportId);
 		String reportURL = String
 				.format("%s/#/%s/%s/espresso/%d/reports/%d", baseUrl.replace("/api/rest", ""), team, app, testSuite, suiteReportId);
@@ -148,12 +148,12 @@ public class TestObjectTestServer extends TestServer {
 		}
 	}
 
-	private static int countErrors(TestSuiteReport suiteReport, boolean failWhenUnavailable) {
+	private static int countErrors(TestSuiteReport suiteReport, boolean failOnUnknown) {
 		int errors = 0;
 		Iterator<TestSuiteReport.ReportEntry> reportsIterator = suiteReport.getReports().iterator();
 		while (reportsIterator.hasNext()) {
 			TestSuiteReport.ReportEntry reportEntry = reportsIterator.next();
-			if (isFailed(reportEntry, failWhenUnavailable)) {
+			if (isFailed(reportEntry, failOnUnknown)) {
 				errors++;
 			}
 		}
