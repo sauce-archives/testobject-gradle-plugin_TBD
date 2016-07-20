@@ -47,7 +47,7 @@ public class TestObjectTestServer extends TestServer {
 		List<String> classesToRun = extension.getClasses();
 		List<String> annotationsToRun = extension.getAnnotations();
 		List<String> sizesToRun = extension.getSizes();
-		boolean failWhenUnavailable = extension.getFailWhenUnavailable();
+		boolean failWhenUnavailable = extension.getFailOnUnknown();
 
 		Boolean runAsPackage = extension.getRunAsPackage() != null ? extension.getRunAsPackage() : false;
 
