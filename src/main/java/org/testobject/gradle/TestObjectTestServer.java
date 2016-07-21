@@ -6,8 +6,8 @@ import com.android.builder.testing.api.TestServer;
 import org.gradle.api.GradleScriptException;
 import org.gradle.api.logging.Logger;
 import org.testobject.api.TestObjectClient;
-import org.testobject.rest.api.TestSuiteReport;
-import org.testobject.rest.api.TestSuiteResource;
+import org.testobject.rest.api.model.TestSuiteReport;
+import org.testobject.rest.api.resource.TestSuiteResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +48,7 @@ public class TestObjectTestServer extends TestServer {
 		List<String> annotationsToRun = extension.getAnnotations();
 		List<String> sizesToRun = extension.getSizes();
 		boolean failOnUnknown = extension.getFailOnUnknown();
+		int testTimeout = extension.getTestTimeout();
 
 		Boolean runAsPackage = extension.getRunAsPackage() != null ? extension.getRunAsPackage() : false;
 
@@ -66,7 +67,8 @@ public class TestObjectTestServer extends TestServer {
 
 		long suiteReportId = client.startInstrumentationTestSuite(team, app, testSuite);
 
-		TestSuiteReport suiteReport = client.waitForSuiteReport(team, app, suiteReportId);
+		TestSuiteReport suiteReport = client
+				.waitForSuiteReport(team, app, suiteReportId, TimeUnit.MINUTES.toMillis(testTimeout), TimeUnit.SECONDS.toMillis(30));
 
 		writeSuiteReportXML(client, team, app, suiteReportId);
 

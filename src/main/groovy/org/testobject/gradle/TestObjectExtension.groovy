@@ -14,6 +14,7 @@ class TestObjectExtension {
     List<String> sizes
     Boolean runAsPackage
 
+    int testTimeout = 60
     boolean failOnUnknown = false
     boolean failOnError = true
 
