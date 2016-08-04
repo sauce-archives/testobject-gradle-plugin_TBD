@@ -12,10 +12,12 @@ class TestObjectExtension {
     List<String> classes
     List<String> annotations
     List<String> sizes
-    Boolean runAsPackage
 
     int testTimeout = 60
+    int checkFrequency = 30
+
     boolean failOnUnknown = false
     boolean failOnError = true
+    boolean runAsPackage = false
 
 }

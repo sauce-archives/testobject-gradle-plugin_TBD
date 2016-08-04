@@ -49,8 +49,9 @@ public class TestObjectTestServer extends TestServer {
 		List<String> sizesToRun = extension.getSizes();
 		boolean failOnUnknown = extension.getFailOnUnknown();
 		int testTimeout = extension.getTestTimeout();
+		int checkFrequency = extension.getCheckFrequency();
 
-		Boolean runAsPackage = extension.getRunAsPackage() != null ? extension.getRunAsPackage() : false;
+		boolean runAsPackage = extension.getRunAsPackage();
 
 		TestSuiteResource.InstrumentationTestSuiteRequest instrumentationTestSuiteRequest = new TestSuiteResource.InstrumentationTestSuiteRequest(
 				runAsPackage);
@@ -68,7 +69,8 @@ public class TestObjectTestServer extends TestServer {
 		long suiteReportId = client.startInstrumentationTestSuite(team, app, testSuite);
 
 		TestSuiteReport suiteReport = client
-				.waitForSuiteReport(team, app, suiteReportId, TimeUnit.MINUTES.toMillis(testTimeout), TimeUnit.SECONDS.toMillis(30));
+				.waitForSuiteReport(team, app, suiteReportId, TimeUnit.MINUTES.toMillis(testTimeout),
+						TimeUnit.SECONDS.toMillis(checkFrequency));
 
 		writeSuiteReportXML(client, team, app, suiteReportId);
 
