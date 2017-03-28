@@ -1,7 +1,16 @@
 testobject-gradle-plugin
 ===================
 
+Build instructions
+------------------
+
+1. Open IntelliJ
+2. Ensure maven project is detected (click Refresh if not)
+3. Build Project
+4. `mvn install`
+
 TestObject Gradle Plugin
+------------------------
 
 Use this plugin to upload your apk and test apk to app.testobject.com and execute the provided test cases.
 
